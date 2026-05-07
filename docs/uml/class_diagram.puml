@@ -1,0 +1,66 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class GameCard {
+  - int _pairId
+  - bool _isFaceUp
+  - bool _isMatched
+  + int get pairId
+  + bool get isFaceUp
+  + bool get isMatched
+  + reveal()
+  + hide()
+  + markMatched()
+}
+
+class GameSettings {
+  - int _pairCount
+  - int _columns
+  + int get pairCount
+  + int get columns
+  + easy()
+  + medium()
+  + hard()
+  + fromJsonString(json)
+}
+
+abstract class Shuffler {
+  + shuffle(items)
+}
+
+class RandomShuffler
+
+abstract class GameEngine {
+  + settings
+  + cards
+  + moves
+  + isCompleted
+  + newGame(settings)
+  + onCardSelected(index)
+}
+
+class MemoryGameEngine {
+  - Shuffler _shuffler
+  - GameSettings _settings
+  - List<GameCard> _cards
+  - int _moves
+  - int? _firstSelectionIndex
+  - bool _isCompleted
+  + hideUnmatchedFaceUpCards()
+}
+
+class GameController {
+  - GameEngine _engine
+  - bool _isBusy
+  + start(settings)
+  + selectCard(index)
+}
+
+RandomShuffler --|> Shuffler
+MemoryGameEngine --|> GameEngine
+MemoryGameEngine o-- Shuffler
+MemoryGameEngine *-- GameCard
+GameController o-- GameEngine
+GameController ..> GameSettings
+
+@enduml
